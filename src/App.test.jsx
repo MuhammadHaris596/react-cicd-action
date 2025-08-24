@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react';
 import { describe, test, expect } from 'vitest'
 import App from './App';
 
+//this i comment
+
 test('renders Github Actions heading', () => {
   render(<App />);
   const headingElement = screen.getByText(/Github Actions/i);
@@ -12,7 +14,7 @@ test('renders Github Actions heading', () => {
 test('contains an h1 element', () => {
   const { container } = render(<App />);
   const h1Element = container.querySelector('h1');
-  expect(h1Element).not.toBeInTheDocument();
+  expect(h1Element).toBeInTheDocument();
 });
 
 test('contains an h2 element', () => {
