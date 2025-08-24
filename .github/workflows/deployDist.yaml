@@ -11,7 +11,7 @@ on:
             -  'README.md'
     
     workflow_dispatch:
-        
+
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -41,8 +41,8 @@ jobs:
             
             - name : Run tests
               run: npm run test
-   
-    deploy:
+                
+    build:
         needs: test
         runs-on: ubuntu-latest
         steps:
@@ -64,8 +64,22 @@ jobs:
             - name : Install dependencies
               run: npm ci
             
-            - name: build
-              run: npm run build
+            - name: Upload Dist Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: dist-files
+                path: dist
 
-            - name: Deployld
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+
+            - name: Upload Dist Artifact
+              uses: actions/download-artifact@v5
+              with:
+                name: dist-files
+                path: dist
+
+            - name: Deploy
               run: echo "Deploy successfully"
