@@ -24,3 +24,23 @@ jobs:
             
             - name : Run tests
               run: npm run test
+   
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: get Code
+              uses: actions/checkout@v5
+            
+            - name: InstalL Node 20
+              uses:  actions/setup-node@v4
+              with: 
+                 node-version: 20
+
+            - name : Install dependencies
+              run: npm ci
+            
+            - name: build
+              run: npm run build
+
+            - name: Deployld
+              run: echo "Deploy successfully"
