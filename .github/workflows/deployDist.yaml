@@ -75,7 +75,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
 
-            - name: Upload Dist Artifact
+            - name: Download Dist Artifact
               uses: actions/download-artifact@v5
               with:
                 name: dist-files
