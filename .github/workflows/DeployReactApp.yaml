@@ -1,0 +1,91 @@
+name : Deploy React to Github Pages
+on:
+    push:
+        branches:
+            - main
+            - feature/**
+        paths-ignore:
+            - '.github/workdflows/**'
+            -  '.gitignore'
+            -  'README.md'
+    
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: get Code
+              uses: actions/checkout@v5
+    
+
+            - name: Install Node 20
+              uses:  actions/setup-node@v4
+              with: 
+                 node-version: 20
+            
+            - name: print node version
+              run: node -v
+            - name : Cahche dependencies
+              uses: actions/cache@v4
+              with:
+                path: ~/.npm
+                key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+            - name : Install dependencies
+              run: npm ci
+            
+            - name : Run tests
+              run: npm run test
+                
+    build:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: get Code
+              uses: actions/checkout@v5
+            
+            - name: InstalL Node 20
+              uses:  actions/setup-node@v4
+              with: 
+                 node-version: 20
+            - name: print node version
+              run: node -v
+            - name : Cache dependencies
+              uses: actions/cache@v4
+              with:
+                path: ~/.npm
+                key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+            - name : Install dependencies
+              run: npm ci
+            
+            - name : Build
+              run: npm run build
+            
+            - name: Upload Dist Artifact
+              uses: actions/upload-pages-artifact@v4
+              with:
+                name: github-pages
+                path: dist
+
+    deploy:
+      needs: build
+      runs-on: ubuntu-latest
+       
+      permissions:
+        pages: write      
+        id-token: write   
+
+       
+      environment:
+        name: github-pages
+        url:  ${{steps.deployment.outputs.page_url}}
+
+     
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4 
+          with:
+              token: ${{secrets.GITHUB_TOKEN}}
