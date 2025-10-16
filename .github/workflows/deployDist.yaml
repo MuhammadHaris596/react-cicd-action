@@ -6,7 +6,7 @@ on:
             - main
             - feature/**
         paths-ignore:
-            - '.github/workdflows/**'
+            - '.github/workflows/**'
             -  '.gitignore'
             -  'README.md'
     
@@ -30,14 +30,16 @@ jobs:
             
             - name: print node version
               run: node -v
-            - name : Cahche dependencies
+           
+
+            - name : Install dependencies
+              run: npm ci
+
+            - name : Cache dependencies
               uses: actions/cache@v4
               with:
                 path: ~/.npm
                 key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
-            - name : Install dependencies
-              run: npm ci
             
             - name : Run tests
               run: npm run test
@@ -49,7 +51,7 @@ jobs:
             - name: get Code
               uses: actions/checkout@v5
             
-            - name: InstalL Node 20
+            - name: Install Node 20
               uses:  actions/setup-node@v4
               with: 
                  node-version: 20
